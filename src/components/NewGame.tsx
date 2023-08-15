@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserState } from "../slices/userSlice";
+import { RootState } from "../store/store";
 
 import "./NewGame.scss";
 
@@ -11,6 +14,10 @@ function NewGame() {
   const [token, setToken] = useState();
   const [resp, setResp] = useState("");
   const [form, setForm] = useState({ symbol: "", faction: "COSMIC" });
+  const dispatch = useDispatch();
+  const agentName = useSelector(
+    (state: RootState) => state.user.user.agentName
+  );
 
   const submitNewGame = async () => {
     const resp = await fetch("https://api.spacetraders.io/v2/register", {
@@ -26,6 +33,13 @@ function NewGame() {
 
     const json = await resp.json();
 
+    dispatch(
+      setUserState({
+        token: json.data.token,
+        agentName: json.data.agent.symbol,
+      })
+    );
+
     if (resp.ok) {
       setToken(json.data.token);
     }
@@ -36,7 +50,6 @@ function NewGame() {
   return (
     <>
       <h1>Start a New Game</h1>
-
       <div className="new-game__input-container">
         <label>Symbol:</label>
         <input
@@ -54,6 +67,8 @@ function NewGame() {
 
         <input type="submit" onClick={submitNewGame} />
       </div>
+
+      {agentName && <span>Welcome, Commander {agentName}!</span>}
     </>
   );
 }
