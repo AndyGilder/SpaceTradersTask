@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "./store/store";
 import { setUserState } from "./slices/userSlice";
+import { setAgentDetailsState } from "./slices/agentDetailsSlice";
 
 import NewGame from "./components/NewGame";
 import Profile from "./components/Profile";
+import Nav from "./components/Nav";
+
 import "./App.css";
 
 function App() {
@@ -23,11 +26,10 @@ function App() {
         token: JSON.parse(apiKey).token,
         agentName: JSON.parse(apiKey).agentName,
       });
-    }
 
-    if (JSON.parse(apiKey).token) {
-      console.log(JSON.parse(apiKey).token);
-      getUser(JSON.parse(apiKey).token);
+      if (JSON.parse(apiKey).token) {
+        getUser(JSON.parse(apiKey).token);
+      }
     }
   }, []);
 
@@ -47,19 +49,33 @@ function App() {
         agentName: json.data.symbol,
       })
     );
+
+    dispatch(
+      setAgentDetailsState({
+        agentName: json.data.symbol,
+        credits: json.data.credits,
+        headquarters: json.data.headquarters,
+        startingFaction: json.data.startingFaction,
+      })
+    );
   };
 
   return (
-    <>
+    <div className="app-container">
       {userState.token?.length === 0 ||
       userState.agentName?.length === 0 ||
       storageApiKey.token?.length === 0 ||
       storageApiKey.agentName?.length === 0 ? (
         <NewGame />
       ) : (
-        <Profile />
+        <>
+          <Nav />
+          <div className="app-main">
+            <Profile />
+          </div>
+        </>
       )}
-    </>
+    </div>
   );
 }
 

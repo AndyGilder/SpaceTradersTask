@@ -11,16 +11,15 @@ import "./NewGame.scss";
  */
 
 function NewGame() {
-  const [token, setToken] = useState();
-  const [resp, setResp] = useState("");
   const [form, setForm] = useState({ symbol: "", faction: "COSMIC" });
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const agentName = useSelector(
     (state: RootState) => state.user.user.agentName
   );
 
   const submitNewGame = async () => {
-    const resp = await fetch("https://api.spacetraders.io/v2/register", {
+    const response = await fetch("https://api.spacetraders.io/v2/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,11 +30,9 @@ function NewGame() {
       }),
     });
 
-    const json = await resp.json();
+    const json = await response.json();
 
-    if (resp.ok) {
-      setToken(json.data.token);
-
+    if (response.ok) {
       dispatch(
         setUserState({
           token: json.data.token,
@@ -52,7 +49,9 @@ function NewGame() {
       );
     }
 
-    setResp(JSON.stringify(json, null, 2));
+    if (response.status >= 400) {
+      setError(json.error.message);
+    }
   };
 
   return (
@@ -76,7 +75,7 @@ function NewGame() {
         <input type="submit" onClick={submitNewGame} />
       </div>
 
-      {agentName && <span>Welcome, Commander {agentName}!</span>}
+      {error && <div>{error}</div>}
     </>
   );
 }

@@ -1,11 +1,14 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
 blockquote {
   background-color: aquamarine;
   font-weight: 600;
 }
 
+.app-container {
+  width: 100vw;
+}
+
+.app-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}

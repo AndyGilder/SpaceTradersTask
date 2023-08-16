@@ -1,0 +1,19 @@
+.profile {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+
+  &__grid-item {
+    display: flex;
+    flex-direction: column;
+
+    h2,
+    h3 {
+      margin: 0;
+    }
+  }
+
+  &__inner-item {
+    margin-top: 20px;
+  }
+}
