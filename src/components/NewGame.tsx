@@ -33,15 +33,23 @@ function NewGame() {
 
     const json = await resp.json();
 
-    dispatch(
-      setUserState({
-        token: json.data.token,
-        agentName: json.data.agent.symbol,
-      })
-    );
-
     if (resp.ok) {
       setToken(json.data.token);
+
+      dispatch(
+        setUserState({
+          token: json.data.token,
+          agentName: json.data.agent.symbol,
+        })
+      );
+
+      localStorage.setItem(
+        "apiKey",
+        JSON.stringify({
+          agentName: json.data.agent.symbol,
+          token: json.data.token,
+        })
+      );
     }
 
     setResp(JSON.stringify(json, null, 2));
