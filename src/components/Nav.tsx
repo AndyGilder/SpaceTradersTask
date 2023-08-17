@@ -22,6 +22,8 @@ function Nav() {
 
   const logOut = () => {
     localStorage.removeItem("apiKey");
+
+    window.location.reload();
   };
 
   return (

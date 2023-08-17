@@ -47,6 +47,8 @@ function NewGame() {
           token: json.data.token,
         })
       );
+
+      window.location.reload();
     }
 
     if (response.status >= 400) {
