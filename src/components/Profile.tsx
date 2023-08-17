@@ -65,10 +65,6 @@ function Profile() {
               </Link>
             ))}
         </div>
-
-        <div className="profile__inner-item">
-          <span>Current location: </span>
-        </div>
       </section>
 
       <section className="profile__grid-item">
