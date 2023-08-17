@@ -1,0 +1,12 @@
+.ship-details {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+
+  &__orbit-command {
+    margin-top: 20px;
+  }
+}

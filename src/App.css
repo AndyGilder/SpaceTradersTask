@@ -1,3 +1,7 @@
+#root {
+  width: 100%;
+}
+
 blockquote {
   background-color: aquamarine;
   font-weight: 600;

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import moment from "moment";
 import { RootState } from "../store/store";
+import { ToastContainer, toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 import "./Profile.scss";
+import ContractDetails from "./ContractDetails";
 
 function Profile() {
   const userState = useSelector((state: RootState) => state.user.user);
@@ -11,27 +13,32 @@ function Profile() {
     (state: RootState) => state.agentDetails.agentDetails
   );
 
-  const [contractDetails, setContractDetails]: any = useState({});
+  const [shipDetails, setShipDetails]: any = useState({});
 
   useEffect(() => {
-    getContractDetails();
+    getShipDetails();
   }, []);
 
-  const getContractDetails = async () => {
-    const url = "https://api.spacetraders.io/v2/my/contracts";
+  const getShipDetails = async () => {
+    const url = "https://api.spacetraders.io/v2/my/ships";
+    let response;
 
-    const response = await fetch(url, {
-      method: "get",
-      headers: {
-        Authorization: `Bearer ${userState.token}`,
-      },
-    });
+    try {
+      response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userState.token}`,
+        },
+      });
 
-    const json = await response.json();
+      const json = await response.json();
 
-    console.log(json.data);
-
-    setContractDetails(json.data);
+      if (response.ok) {
+        setShipDetails(json.data);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -43,46 +50,36 @@ function Profile() {
         <div className="profile__inner-item">
           <span>Headquarters: {agentDetails.headquarters}</span>
         </div>
+
+        <div className="profile__inner-item">
+          <span>Ships:</span>
+          {shipDetails.length > 0 &&
+            shipDetails?.map((ship: any, index: number) => (
+              <Link
+                to="/shipDetails"
+                state={{ ship: ship, token: userState.token }}
+                key={index}
+                className="profile__ship-details-link"
+              >
+                {ship.symbol}
+              </Link>
+            ))}
+        </div>
+
+        <div className="profile__inner-item">
+          <span>Current location: </span>
+        </div>
       </section>
 
       <section className="profile__grid-item">
-        <h2>Current contracts:</h2>
-
-        {contractDetails.length > 0 &&
-          [...contractDetails]?.map((item: any, index: number) => (
-            <section key={index}>
-              <div>Contract Type: {item.type}</div>
-              <div>Faction: {item.factionSymbol}</div>
-              <div>
-                Deadline:
-                {moment(item.terms.deadline).format("Do MMMM YYYY HH:mm")}
-              </div>
-              <div>
-                Status: {item.accepted ? "Accepted" : "Not yet accepted"}
-              </div>
-              {item.fulfilled ? <div>Fulfilled: Contract fulfilled</div> : ""}
-              <div>
-                Payment on fulfillment: {item.terms.payment.onFulfilled} credits
-              </div>
-
-              <div>
-                Terms:
-                {item.terms.deliver.map(
-                  (deliveryTerm: any, innerIndex: number) => (
-                    <div key={innerIndex}>
-                      <div>{`Deliver ${deliveryTerm.unitsRequired} units of ${deliveryTerm.tradeSymbol} to ${deliveryTerm.destinationSymbol}`}</div>
-                      <div>{`Current amount delivered: ${deliveryTerm.unitsFulfilled}`}</div>
-                    </div>
-                  )
-                )}
-              </div>
-            </section>
-          ))}
+        <ContractDetails token={userState.token} />
       </section>
 
       <section className="profile__grid-item">
-        <h2>Credits: {agentDetails.credits}</h2>
+        <h2>Credits: {agentDetails.credits.toLocaleString()}</h2>
       </section>
+
+      <ToastContainer />
     </div>
   );
 }

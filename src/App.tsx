@@ -6,8 +6,8 @@ import { setAgentDetailsState } from "./slices/agentDetailsSlice";
 
 import NewGame from "./components/NewGame";
 import Profile from "./components/Profile";
-import Nav from "./components/Nav";
 
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 function App() {
@@ -66,10 +66,11 @@ function App() {
       userState.agentName?.length === 0 ||
       storageApiKey.token?.length === 0 ||
       storageApiKey.agentName?.length === 0 ? (
-        <NewGame />
+        <div className="app-main">
+          <NewGame />
+        </div>
       ) : (
         <>
-          <Nav />
           <div className="app-main">
             <Profile />
           </div>
