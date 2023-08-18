@@ -23,12 +23,13 @@ function Nav() {
   const logOut = () => {
     localStorage.removeItem("apiKey");
 
+    navigate("/");
     window.location.reload();
   };
 
   return (
     <nav className="top-nav">
-      {storageApiKey.token && (
+      {localStorage.getItem("apiKey") && (
         <>
           <button onClick={() => navigate("/")}>Profile</button>
           <button onClick={logOut}>Log out</button>
